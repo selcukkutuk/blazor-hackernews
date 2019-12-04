@@ -1,0 +1,32 @@
+﻿<article class="item-summary">
+    <h2>
+        <a href="@(CurrentItem.Domain != null ? CurrentItem.Url:$"/item/{CurrentItem.Id}")">
+            @(CurrentItem.Title)
+            @if (CurrentItem.Domain != null)
+            {
+                <small>(@CurrentItem.Domain)</small>
+            }
+        </a>
+    </h2>
+    @if (CurrentItem.Type == "job")
+    {
+        <p>@CurrentItem.TimeAgo</p>
+    }
+    else
+    {
+        <p>
+            @CurrentItem.Points points by
+            <a href="user/@CurrentItem.User">@CurrentItem.User</a> @CurrentItem.TimeAgo
+            | <a href="item/@CurrentItem.Id">@CurrentItem.CommentsCount @(CurrentItem.CommentsCount == 1 ? "comment" : "comments")</a>
+        </p>
+    }
+
+    <span class="index">@Index</span>
+</article>
+
+@code {
+    [Parameter]
+    public ItemModel CurrentItem { get; set; }
+    [Parameter]
+    public int Index { get; set; }
+}

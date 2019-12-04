@@ -1,0 +1,36 @@
+﻿@page "/user/{username}"
+@inject HttpClient Http
+
+@if (UserDetail != null)
+{
+    <h1>@UserName</h1>
+
+    <div>
+        <p>...joined <strong>@UserDetail.Created</strong>, and has <strong>@UserDetail.Karma</strong> karma</p>
+
+        <p>
+            <a href="https://news.ycombinator.com/submitted?id=@UserDetail.Id">submissions</a> /
+            <a href="https://news.ycombinator.com/threads?id=@UserDetail.Id">comments</a> /
+            <a href="https://news.ycombinator.com/favorites?id=@UserDetail.Id">favourites</a>
+        </p>
+        @if (UserDetail.About != null)
+        {
+            <div class="about">
+                @((MarkupString)("<p>" + UserDetail.About))
+            </div>
+        }
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string UserName { get; set; }
+
+    private UserModel UserDetail { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        UserDetail = await Http.GetJsonAsync<UserModel>($"https://api.hnpwa.com/v0/user/{UserName}.json");
+    }
+}

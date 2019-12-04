@@ -1,0 +1,26 @@
+﻿@if (ItemComment.Deleted == null || (ItemComment.Deleted != null && !ItemComment.Deleted.Value))
+{
+    <article class="comment-container comment">
+        <span class="meta"><strong><a href="user/@ItemComment.User">@ItemComment.User</a></strong> @ItemComment.TimeAgo</span>
+        <div class="body">
+            @((MarkupString)ItemComment.Content)
+        </div>
+        @if (ItemComment.Comments?.Count > 0)
+        {
+            <ul class="children">
+                @foreach (var comment in ItemComment.Comments)
+                {
+                    <li><Comment ItemComment="comment" /></li>
+                }
+
+            </ul>
+        }
+    </article>
+}
+
+
+@code {
+
+    [Parameter]
+    public ItemModel ItemComment { get; set; }
+}

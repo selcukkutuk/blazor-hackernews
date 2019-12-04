@@ -1,0 +1,48 @@
+﻿@page "/"
+@page "/{pageName}"
+@page "/{pageName}/{page:int}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+@if (Items != null)
+{
+    @for (int i = 0; i < Items.Length; i++)
+    {
+        <ItemSummary CurrentItem="Items[i]" Index="Start+i" />
+    }
+}
+@if (NextPage != null)
+{
+    <a class="more" href="@NextPage">More...</a>
+}
+@code{
+    [Parameter]
+    public string PageName { get; set; }
+    [Parameter]
+    public int Page { get; set; }
+
+    private int PageSize = 30;
+    private string[] Pages = new[] { "top", "new", "show", "ask", "jobs" };
+    private string NextPage { get; set; }
+    private int Start { get; set; }
+    private ItemModel[] Items;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (PageName == null || !Pages.Any(t => t == PageName))
+        {
+            NavigationManager.NavigateTo("/top/1");
+        }
+        else
+        {
+            Page = Page <= 0 ? 1 : Page;
+
+            NextPage = $"/{PageName}/{Page + 1}";
+            Start = (1 + (Page - 1) * PageSize);
+
+            string apiPart = PageName == "top" ? "news" : PageName == "new" ? "newest" : PageName;
+            Items = await Http.GetJsonAsync<ItemModel[]>($"https://api.hnpwa.com/v0/{apiPart}/{Page}.json");
+        }
+    }
+
+}

@@ -1,0 +1,43 @@
+﻿@page "/item/{itemId:int}"
+@inject HttpClient Http
+
+@if (ItemDetail != null)
+{
+    <article class="item-conteiner item">
+        <a class="main-link" href="@ItemDetail.Url">
+            <h1>@ItemDetail.Title</h1>
+            @if (ItemDetail.Domain != null)
+            {
+                <small>@ItemDetail.Domain</small>
+            }
+        </a>
+
+        <p class="meta">@ItemDetail.Points points by <a href="user/@ItemDetail.User">@ItemDetail.User</a> @ItemDetail.TimeAgo</p>
+        @if (ItemDetail.Content != null)
+        {
+            @((MarkupString)ItemDetail.Content)
+        }
+    </article>
+
+    <div class="comments">
+        @foreach (var comment in ItemDetail.Comments)
+        {
+            <Comment ItemComment="comment" />
+        }
+    </div>
+}
+
+
+
+@code {
+
+    [Parameter]
+    public int ItemId { get; set; }
+
+    private ItemModel ItemDetail { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        ItemDetail = await Http.GetJsonAsync<ItemModel>($"https://api.hnpwa.com/v0/item/{ItemId}.json");
+    }
+}
