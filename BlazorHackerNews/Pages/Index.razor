@@ -1,6 +1,7 @@
 ﻿@page "/"
 @page "/{pageName}"
 @page "/{pageName}/{page:int}"
+@inject AppMetaState MetaState
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
@@ -35,6 +36,9 @@
         }
         else
         {
+            MetaState.SetTitle(PageName);
+            MetaState.CallStateHasChanged();
+
             Page = Page <= 0 ? 1 : Page;
 
             NextPage = $"/{PageName}/{Page + 1}";

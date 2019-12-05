@@ -16,7 +16,4 @@
     <Watch Include="**\*.css" />
     <Watch Include="**\*.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Watch Remove="Models\UserModel.cs" />
-  </ItemGroup>
 </Project>
